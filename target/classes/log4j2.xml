@@ -1,0 +1,32 @@
+<!--https://logging.apache.org/log4j/2.x/manual/appenders.html-->
+<!--log by day and by size-->
+<Configuration status="ERROR">
+    <Appenders>
+        <Console name="LogToConsole" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+        </Console>
+        <RollingFile name="LogToRollingFile" fileName="log/trace.log" filePattern="log/%d{yyyy-MM-dd}.trace.log" bufferedIO="true">
+            <PatternLayout>
+                <Pattern>%d{dd-MM-yyyy-HH:mm:ss,SSS} [%t] %-5p %c{1}:%L - %m%n</Pattern>
+            </PatternLayout>
+            <Policies>
+                <!--<CronTriggeringPolicy schedule="0 0 * * * ?"/>-->
+                <TimeBasedTriggeringPolicy interval="1"/>
+                <SizeBasedTriggeringPolicy size="150 MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="100"/>
+        </RollingFile>
+        <Async name="Async">
+            <AppenderRef ref="LogToRollingFile"/>
+        </Async>
+    </Appenders>
+	
+    <Loggers>
+        <Logger name="com.etz" level="debug" additivity="false">
+            <AppenderRef ref="Async"/>
+        </Logger>
+        <Root level="error">
+            <AppenderRef ref="LogToConsole"/>
+        </Root>
+    </Loggers>
+</Configuration>
